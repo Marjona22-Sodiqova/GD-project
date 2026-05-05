@@ -5,6 +5,7 @@ public class Player: MonoBehaviour
     public float moveSpeed = 5f;
     public float turnSpeed = 180; 
     public Transform cameraTransform;
+    public CameraFollow Camera;
     private Rigidbody rb;
     public float jumpForce = 5f; 
     public float force = 3f;
@@ -13,6 +14,8 @@ public class Player: MonoBehaviour
     private bool create = true;
     public GameManager gm;
     private bool can_move = true;
+    public Inventory inventory = new Inventory();
+    public Transform gun;
 
 
     public void can_move_set(bool state)
@@ -34,6 +37,7 @@ public class Player: MonoBehaviour
             Turn();
             Jump();
         }
+        
         // else
         // {
         //     if (Input.GetKeyDown(KeyCode.Escape))
@@ -53,6 +57,19 @@ public class Player: MonoBehaviour
         }
         create = !gm.is_available();
         after_damage();
+        if (Input.GetKeyDown(KeyCode.Alpha1)) 
+        {
+            Camera.currentOffset = 0;
+            //Debug.Log("Camera1");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            Camera.currentOffset = 1;
+            //Debug.Log("Camera2");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+            Camera.currentOffset = 2;
+            //Debug.Log("Camera2");
+        }
     }
 
     void Move()

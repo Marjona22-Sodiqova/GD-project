@@ -129,7 +129,6 @@ public class main : MonoBehaviour
                     {
                         maze[i, j]=1;
                     }
-                    
                 }
                 if (maze[i, j]==1)
                 {

@@ -6,8 +6,9 @@ public class Enemy: MonoBehaviour
     public float turnSpeed = 360; 
     private Rigidbody rb;
     public TerritoryChecker territoryChecker ;
-    private float health = 200f;
+    public float health = 200f;
     public float damage = 10f;
+
 
     void Start()
     {
@@ -20,6 +21,10 @@ public class Enemy: MonoBehaviour
         {
             Move(1f);
             Turn(Vector3.Angle(transform.forward, territoryChecker.target));
+        }
+        if (health <= 0)
+        {
+            Destroy(gameObject);
         }
         
     }

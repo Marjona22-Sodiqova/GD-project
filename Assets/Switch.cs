@@ -2,18 +2,21 @@ using UnityEngine;
 
 public class Switch : Logic_element
 {
+    public bool isLever = true;
     public Connect contact; 
-    public bool state = false;
+    public Button button;
     void Start()
     {
-        name = "SWITCH";
+        set_tag();
+        Name = "SWITCH";
+        contact.isInput = false;
     }
 
     // Update is called once per frame
 
     void Update()
     {
-        if (contact == null) return;
+        if (isLever) state = button.state;
 
         contact.state = state;
     }

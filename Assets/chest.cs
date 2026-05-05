@@ -7,18 +7,16 @@ public class chest : MonoBehaviour
     public Transform open2;
     public bool close=true;
     private bool state = false;
+    public Inventory inventory = new Inventory();
+    private bool isAnimating = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        
+        inventory.RandamLoot();
     }
 
     // Update is called once per frame
     void Update()
-    {
-        
-    }
-    void FixedUpdate()
     {
         // if (!close && !state)
         // {
@@ -30,23 +28,54 @@ public class chest : MonoBehaviour
         //     Close();
         //     state = false;
         // }
+        // if (rotateTween1 != null) stop = rotateTween1.IsComplete();
+    }
+    Tween rotateTween1;
+    // private Tween rotateTween2;
+    public void changeState()
+    {
+        if (isAnimating) return;
+
+        close = !close;
+
+        if (!close)
+            Open();
+        else
+            Close();
+        
+    }
+    void FixedUpdate()
+    {
+        
+        
     }
     public void Open()
     {
+        isAnimating = true;
+
         Vector3 move = new Vector3(0, 0, 90);
-        Vector3 angle1 = open1.eulerAngles + move;
-        Vector3 angle2 = open2.eulerAngles + move;
-        open1.DORotate(angle1, 2f);
-        open2.DORotate(angle2, 2f);
+
+        open1.DORotate(open1.eulerAngles + move, 2f);
+        open2.DORotate(open2.eulerAngles + move, 2f)
+            .OnComplete(() =>
+            {
+                isAnimating = false;
+                state = true;
+            });
 
     }
     public void Close()
     {
-        Vector3 move = new Vector3(0, 0, -90);
-        Vector3 angle1 = open1.eulerAngles + move;
-        Vector3 angle2 = open2.eulerAngles + move;
-        open1.DORotate(angle1, 2f);
-        open2.DORotate(angle2, 2f);
+        isAnimating = true;
 
+        Vector3 move = new Vector3(0, 0, -90);
+
+        open1.DORotate(open1.eulerAngles + move, 2f);
+        open2.DORotate(open2.eulerAngles + move, 2f)
+            .OnComplete(() =>
+            {
+                isAnimating = false;
+                state = false;
+            });
     }
 }

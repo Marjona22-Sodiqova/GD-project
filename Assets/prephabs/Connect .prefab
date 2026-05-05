@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5098008927364053442}
   - component: {fileID: 6074483655630310257}
   - component: {fileID: 6910004581453804889}
-  - component: {fileID: 8507893130269305409}
-  - component: {fileID: 8167482291617667777}
+  - component: {fileID: 6111409231688277973}
+  - component: {fileID: 7017024400444025746}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -114,7 +114,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!108 &8507893130269305409
+--- !u!108 &6111409231688277973
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,9 +124,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 2
-  m_Color: {r: 0.1249671, g: 1, b: 0, a: 1}
-  m_Intensity: 0.3
-  m_Range: 3
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.1
+  m_Range: 1.0116817
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -179,7 +179,7 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!114 &8167482291617667777
+--- !u!114 &7017024400444025746
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -335,9 +335,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bb0b3b2ed951a843ad73444114b7a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Connect
+  Name: Logic Gate
+  isChangable: 1
+  IsPlaced: 0
   state: 1
   isInput: 1
-  lightComp: {fileID: 8507893130269305409}
+  rend: {fileID: 6074483655630310257}
+  onMat: {fileID: 2100000, guid: 8adca2743c27a894aba103063d590533, type: 2}
+  offMat: {fileID: 2100000, guid: 3e077839b9174de44a9001c05f942f50, type: 2}
+  lightComp: {fileID: 6111409231688277973}
 --- !u!54 &7796826958915761491
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -7,6 +7,8 @@ TagManager:
   - Plane
   - Enemy
   - Chest
+  - Logic Element
+  - Button
   layers:
   - Default
   - TransparentFX

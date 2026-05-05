@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public int world { get; private set; } = 1;
     public int stage { get; private set; } = 1;
     public GameObject[] elements;
+    public GameObject bullet;
     public int i=0;
     private Camera mainCamera;
     private Logic_element current;
@@ -15,6 +16,9 @@ public class GameManager : MonoBehaviour
     private Logic_element holding_element;
     public Player player;
     public bool isPaused = false;
+    private bool shoot = false;
+    public bool creative = true;
+    private bool state = true;
     public bool is_available()
     {
         return (current != null);
@@ -110,7 +114,7 @@ public class GameManager : MonoBehaviour
         {
             if (i<elements.Length-1){ i++;}
             else {i=0;}
-            Debug.Log(i);
+            //Debug.Log(i);
             Destroy(current.gameObject);
             GameObject gm = Instantiate(elements[i]);
             current = gm.GetComponent<Logic_element>();
@@ -119,7 +123,7 @@ public class GameManager : MonoBehaviour
         {
             if (i>0) {i--;}
             else {i=elements.Length-1;}
-            Debug.Log(i);
+            //Debug.Log(i);
             Destroy(current.gameObject);
             GameObject gm = Instantiate(elements[i]);
             current = gm.GetComponent<Logic_element>();
@@ -127,7 +131,26 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void Update()
+    // private float cur_time = 0.001f;
+    // private float delay = 0.001f;
+    // bool clickTimer()
+    // {
+    //     Debug.Log(cur_time);
+    //     if (cur_time <= 0)
+    //     {
+    //         cur_time = delay;
+    //         return true;
+    //     }
+    //     else
+    //     {
+    //         cur_time -= Time.deltaTime;
+    //         return false;
+    //     }
+    //     //return true;
+        
+    // }
+
+    void placeIt()
     {
         if (current != null)
         {
@@ -140,8 +163,8 @@ public class GameManager : MonoBehaviour
 
                 // int x = Mathf.RoundToInt(worldPosition.x);
                 // int y = Mathf.RoundToInt(worldPosition.z);
-
-                Vector3 pos = new Vector3(Mathf.Round(worldPosition.x*10)/10, 0.5f, Mathf.Round(worldPosition.z*10)/10);
+                int step = 40;
+                Vector3 pos = new Vector3(Mathf.Round(worldPosition.x*step)/step, 0.1f, Mathf.Round(worldPosition.z*step)/step);
 
 
                 //current.gameObject.transform.position = pos;
@@ -152,11 +175,17 @@ public class GameManager : MonoBehaviour
 
                 current_id();
 
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0)) 
                 {
-                    Instantiate(current.gameObject);
-                    Destroy(current.gameObject);
-                    current = null;
+                    state = false;
+                    if (player.inventory.ChangeByName(current.Name, -1) || creative)
+                    {
+                        Instantiate(current.gameObject);
+                    
+                        Destroy(current.gameObject);
+                        current = null;
+                    }
+                    
                 }
                 if (Input.GetMouseButtonDown(1))
                 {
@@ -165,27 +194,105 @@ public class GameManager : MonoBehaviour
                 }
 
             }
+            
         }
-        else if (current == null && Input.GetMouseButtonDown(0))
+    }
+
+    void select()
+    {
+        if (current == null)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 // Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    // Debug.Log("Попал в: " + hit.collider.name);
+                    //Debug.Log("Попал в: " + hit.collider.name);
                     // Debug.Log(hit.collider.gameObject.transform.position);
                     //grab_object = hit.collider.gameObject;
                     if(hit.collider.tag == "Chest")
                     {
                         //player.can_move_set(false);
-                        hit.collider.gameObject.GetComponent<chest>().Open();
+                        chest C = hit.collider.gameObject.GetComponent<chest>();
+                        C.changeState();
+                        C.inventory.Transact(player.inventory);
+
 
                     }
+                    else if(hit.collider.tag == "Logic Element" && state)
+                    {
+                        //Debug.Log("Logic element hit");
+                        Logic_element le = hit.collider.gameObject.GetComponent<Logic_element>();
+                        le.showState(player.transform);
+                        if (le.isChangable)
+                        {
+                            current = le;
+                            player.inventory.ChangeByName(current.Name, +1);
+                        }
+                    }
+                    else if(hit.collider.tag == "Button" && state)
+                    {
+                        //Debug.Log("Logic element hit");
+                        hit.collider.gameObject.GetComponent<Button>().push();
+                        
+                    }
                 }
+            }
+            
         }
+    }
 
+    void stateShow()
+    {
+        // if (current == null  && state)
+        // {
+        //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //         // Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        //         RaycastHit hit;
+
+        //         if (Physics.Raycast(ray, out hit))
+        //         {
+        //             if(hit.collider.tag == "Logic Element")
+        //             {
+        //                 //Debug.Log("Logic element hit");
+        //                 Logic_element le = hit.collider.gameObject.GetComponent<Logic_element>();
+        //                 le.showState(player.cameraTransform);
+        //             }
+        //         }
+        // }
+    }
+
+    private void shooter()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Debug.Log("Boom");
+            Vector3 pos = new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z);
+            GameObject amo = Instantiate(bullet, player.gun.transform.position, Quaternion.identity);
+            amo.GetComponent<Rigidbody>().AddForce(pos * 75f, ForceMode.Impulse);
+        }
+    }
+
+    private void Update()
+    {
+        if (!shoot)
+        {
+            placeIt();
+            select();
+            stateShow();
+            state=true;
+        }
+        else
+        {
+            shooter();
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            shoot = !shoot;
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // Debug.Log("Pause");
@@ -196,23 +303,16 @@ public class GameManager : MonoBehaviour
     public void TogglePause()
     {
         isPaused = !isPaused;
-        if (isPaused)
-        {
-            Debug.Log(" Paused: ");
-        }
-        else
-        {
-            Debug.Log("Not Paused: ");
-        }
-        
 
         if (isPaused)
         {
             Time.timeScale = 0f;
+            // Debug.Log(" Paused: ");
         }
         else
         {
             Time.timeScale = 1f;
+            // Debug.Log("Not Paused: ");
         }
     }
 
@@ -220,7 +320,6 @@ public class GameManager : MonoBehaviour
     {
         TogglePause();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
     }
 
 }

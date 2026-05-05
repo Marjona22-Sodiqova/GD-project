@@ -7,22 +7,27 @@ public class NOT_logic : Logic_element
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        name = "NOT";
+        set_tag();
+        Name = "NOT";
+        contact1.isInput = true;
+        contact2.isInput = false;
+
     }
 
     // Update is called once per frame
 
     void Update()
     {
-        if (contact1 == null || contact2 == null) return;
 
-        if (contact1.isInput && !contact2.isInput)
-        {
-            contact2.state = !contact1.state;
-        }
-        else if (contact2.isInput && !contact1.isInput)
-        {
-            contact1.state = !contact2.state;
-        }
+        // if (contact1.isInput && !contact2.isInput)
+        // {
+        //     contact2.state = !contact1.state;
+        // }
+        // else if (contact2.isInput && !contact1.isInput)
+        // {
+        //     contact1.state = !contact2.state;
+        // }
+        state = !contact1.state;
+        contact2.state = state;
     }
 }
