@@ -13,6 +13,11 @@ public class Inventory
         dict["WIRE"] = 0;
         dict["NOT"] =0;
         dict["SWITCH"] = 0;
+        dict["LED"] = 0;
+        dict["MUX"] = 0;
+        dict["DMUX"] = 0;
+        dict["HalfSum"] = 0;
+        dict["FullSum"] = 0;
     }
 
     public void Transact(Inventory other)
@@ -23,7 +28,7 @@ public class Inventory
         {
             int amount = dict[key];
 
-            // Debug.Log($"Player get {key}: {amount}");
+            Debug.Log($"Player get {key}: {amount}");
 
             if (other.dict.ContainsKey(key))
                 other.dict[key] += amount;
@@ -54,6 +59,11 @@ public class Inventory
         dict["WIRE"] = Random.Range(0, 50);
         dict["NOT"] = Random.Range(0, 10);
         dict["SWITCH"] = Random.Range(0, 10);
+        dict["LED"] = Random.Range(0, 10);
+        dict["MUX"] = Random.Range(0, 10);
+        dict["DMUX"] = Random.Range(0, 10);
+        dict["HalfSum"] = Random.Range(0, 5);
+        dict["FullSum"] = Random.Range(0, 5);
     }
     // bool isValid(string name)
     // {

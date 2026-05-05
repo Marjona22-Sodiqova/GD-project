@@ -6,9 +6,11 @@ public class Logic_element : MonoBehaviour
     public bool state = false;
     public  string Name = "Logic Gate";
     public bool isChangable = true;
+    private BoxCollider box;
     void Awake()
     {
-       
+       box = GetComponent<BoxCollider>();
+        box.isTrigger = true;
     }
     public void set_tag()
     {

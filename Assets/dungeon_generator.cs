@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class main : MonoBehaviour
 { 
+    public Screen_Manager SM;
     public int width;
     public int height;
     public bool create = false;
@@ -14,6 +15,8 @@ public class main : MonoBehaviour
     public GameObject[] traps;
     public GameObject Enemy;
     public GameObject exitBlock;
+    public GameObject Chest;
+    public GameObject Task;
     public GameObject trigger;
     public float difficulty = 0.1f;
     private GameObject[,] dungeon_block;
@@ -51,6 +54,14 @@ public class main : MonoBehaviour
                 {
                     maze[i, j] = 2;
                 }
+                // else if (IsInside(new Vector2Int(i, j)) && Random.Range(0f, 1f) <= 0.4)
+                // {
+                //     maze[i, j] = 3;
+                // }
+                // else if (IsInside(new Vector2Int(i, j)) && Random.Range(0f, 1f) <= 0.3)
+                // {
+                //     maze[i, j] = 4;
+                // }
                 else
                 {
                     maze[i, j] = 1;
@@ -106,7 +117,7 @@ public class main : MonoBehaviour
                         dungeon_block[i+side.x, j + side.y] = Instantiate(trigger, new Vector3(2 * (i + side.x), 1, 2 * (j + side.y)), Quaternion.identity, transform);
                         
                         dungeon_block[i, j] = Instantiate(traps[0], new Vector3(2*i, 1, 2*j), Quaternion.Euler(0, angle, 0), transform);
-                        Instantiate(Enemy, new Vector3(2*i, 1, 2*j), Quaternion.Euler(0, angle, 0), transform);
+                        //Instantiate(Enemy, new Vector3(2*i, 1, 2*j), Quaternion.Euler(0, angle, 0), transform);
                         //dungeon_block[i, j].GetComponent<Cage>().trigger = dungeon_block[i+side.x, j + side.y].GetComponent<TrapTrigger>();
                         TrapTrigger trig = dungeon_block[i+side.x, j + side.y].GetComponent<TrapTrigger>();
 
@@ -138,9 +149,31 @@ public class main : MonoBehaviour
                 {
                     dungeon_block[i, j] = Instantiate(exitBlock, new Vector3(2*i, 1, 2*j), Quaternion.identity, transform);
                 }
+                
+                
                 else
                 {
-                    dungeon_block[i, j] = null;
+                    float chance = Random.Range(0f, 1f);
+                    if (dungeon_block[i, j] == null)
+                    {
+                        if (chance <= 0.1)
+                        {
+                            dungeon_block[i, j] = Instantiate(Chest, new Vector3(2*i, 0.4f, 2*j), Quaternion.identity, transform);
+                        }
+                        else if (chance >= 0.9)
+                        {
+                            dungeon_block[i, j] = Instantiate(Task, new Vector3(2*i, 0.03f, 2*j), Quaternion.identity, transform);
+                        }
+                        else if (chance <= 0.6 && chance >= 0.5)
+                        {
+                            dungeon_block[i, j] = Instantiate(trigger, new Vector3(2 * i, 1, 2 * j), Quaternion.identity, transform);
+                            TrapTrigger TT = dungeon_block[i, j].GetComponent<TrapTrigger>();
+                            TT.set_SM(SM);
+                            TT.MathTrap = true;
+                        }
+                        else  dungeon_block[i, j] = null;
+                    }
+                    
                 }
             }
         }
